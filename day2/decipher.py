@@ -3,7 +3,11 @@ def decipher(filename: str) -> bool:
     with open(filename, "r") as file:
         for line in file:
             result = line.split(",")
-            print(result)
+    
+            for item in result:
+                print(item)
+
+
     return False
 
 if __name__ == "__main__":
