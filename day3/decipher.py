@@ -6,31 +6,28 @@ def decipher(filename: str) -> bool:
 
         for line in file:
 
-            line = line.replace('\n', '')
+            line = [int(num) for num in line if num.isdigit()]
 
-            jolt = 0
-            l = 0
+            possible_max_string = []
 
             print(f"This is the current line we are working on {line}")
 
-            while l < len(line):
+            for i, digit in enumerate(line):
 
-                r = l + 1
+                remaining = len(line) - 1 - i
 
-                while r < len(line):
+                while possible_max_string and digit > possible_max_string[-1] and (len(possible_max_string) - 1 + 1 + remaining >= 12):
+                    possible_max_string.pop()
 
-                    possible_max = int(line[l]+line[r])
-                    jolt = max(jolt, possible_max)
+                if len(possible_max_string) < 12:
+                    possible_max_string.append(digit)
 
-                    r += 1
-                    
-                l += 1
+            max_num_found = int("".join(map(str, possible_max_string)))
 
-            print(f"This is the max jolt we found for this line {jolt}")
+            print(f"This is the max num we found {max_num_found}")
 
-            result += jolt
+            result += max_num_found
 
-            print(f"This is the result right now {result}")
 
     print(f"The final result is {result}")
 
