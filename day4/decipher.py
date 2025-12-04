@@ -29,7 +29,6 @@ def decipher_simulate(current_grid: list) -> int:
     rows = len(current_grid)
     cols = len(current_grid[0])
 
-    generation = 1
     result = 0
 
     while True:
@@ -54,7 +53,6 @@ def decipher_simulate(current_grid: list) -> int:
                         changes += 1
 
         current_grid = next_grid
-        generation += 1
 
         if changes == 0:
             break
