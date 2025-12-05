@@ -21,7 +21,7 @@ def decipher(filename: str) -> int:
 
             thisRange = lineRange.split("-")
 
-            rangeToAdd = range(int(thisRange[0]), int(thisRange[1]))
+            rangeToAdd = range(int(thisRange[0]), int(thisRange[1])+1)
 
             ranges.append(rangeToAdd)
 
@@ -46,14 +46,28 @@ def decipher(filename: str) -> int:
   #                  count += 1
    #                 break
         #
-        for ranger in ranges:
 
-            print(ranger.stop)
-            print(ranger.start)
-            print(ranger.stop-ranger.start)
+        ranges.sort(key=lambda x: x.start)
+
+        final_ranges = []
+
+        curr_start, curr_stop = ranges[0].start, ranges[0].stop
+
+        for i in range(1, len(ranges)):
+
+            next_range = ranges[i]
+
+            if next_range.start < curr_stop:
+                 curr_stop = max(curr_stop, next_range.stop)
+            else:
+                final_ranges.append(range(curr_start, curr_stop))
+                curr_start, curr_stop = next_range.start, next_range.stop
+
+        final_ranges.append(range(curr_start, curr_stop))
+
+        for ranger in final_ranges:
 
             count += ranger.stop - ranger.start
-
 
 
     return count
