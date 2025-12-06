@@ -5,13 +5,30 @@ def decipher(filename: str) -> int:
 
         vertical = list(map(list, zip(*rows)))
 
-
         for item in vertical:
             operator = item.pop()
 
+            max_length = max(len(num) for num in item)
+
+            if operator == '*':
+                aligned = [num.ljust(max_length) for num in item]
+            else:
+                aligned = [num.rjust(max_length) for num in item]
+
+            new_numbers = []
+
+            for i in range(max_length):
+                digits = [num[i] for num in aligned]
+
+                vertical_digits = "".join(digits).strip()
+
+                new_numbers.append(vertical_digits)
+
             equation = ""
 
-            equation = operator.join(item)
+            new_numbers.reverse()
+
+            equation = operator.join(new_numbers)
 
             print(equation)
             count += eval(equation)
