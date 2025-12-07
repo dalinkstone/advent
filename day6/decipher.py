@@ -1,37 +1,27 @@
 def decipher(filename: str) -> int:
     count = 0
+    col_start = 0
+
     with open(filename, "r") as file:
-        rows = [line.split() for line in file if line.strip()]
+        lines = file.readlines()
 
-        vertical = list(map(list, zip(*rows)))
+    max_len = max(len(line.strip()) for line in lines)
 
-        for item in vertical:
-            operator = item.pop()
+    inputs = [line.strip().ljust(max_len + 1) for line in lines]
 
-            max_length = max(len(num) for num in item)
+    for col in range(max_len + 1):
+        if all(line[col] == " " for line in inputs):
+            problem = [line[col_start:col] for line in inputs]
 
-            if operator == '*':
-                aligned = [num.ljust(max_length) for num in item]
-            else:
-                aligned = [num.rjust(max_length) for num in item]
+            operator = problem.pop().strip()
 
-            new_numbers = []
+            columns = zip(*problem)
 
-            for i in range(max_length):
-                digits = [num[i] for num in aligned]
+            terms = ["".join(col).strip() for col in columns]
 
-                vertical_digits = "".join(digits).strip()
+            count += eval(operator.join(terms))
 
-                new_numbers.append(vertical_digits)
-
-            equation = ""
-
-            new_numbers.reverse()
-
-            equation = operator.join(new_numbers)
-
-            print(equation)
-            count += eval(equation)
+            col_start = col + 1
 
     return count
 
