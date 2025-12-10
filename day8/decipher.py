@@ -5,9 +5,9 @@ def decipher(filename: str) -> int:
             if line.strip():
                 points.append([int(num) for num in line.strip().split(",")])
 
-    pairs = []
     num_points = len(points)
     
+    edges = []
     for i in range(num_points):
         for j in range(i + 1, num_points):
             p1 = points[i]
@@ -16,11 +16,12 @@ def decipher(filename: str) -> int:
             dist_sq = (p1[0] - p2[0])**2 + (p1[1] - p2[1])**2 + (p1[2] - p2[2])**2
             distance = dist_sq ** 0.5
             
-            pairs.append((distance, i, j))
+            edges.append((distance, i, j))
 
-    pairs.sort(key=lambda x: x[0])
+    edges.sort(key=lambda x: x[0])
 
     parent = list(range(num_points))
+    num_circuits = num_points
 
     def find_root(p):
         path = []
@@ -31,34 +32,22 @@ def decipher(filename: str) -> int:
             parent[node] = p
         return p
 
-    limit = 1000
-    for k in range(min(limit, len(pairs))):
-        _, idx_a, idx_b = pairs[k]
-        
+    for _, idx_a, idx_b in edges:
         root_a = find_root(idx_a)
         root_b = find_root(idx_b)
-        
+
         if root_a != root_b:
             parent[root_a] = root_b
+            num_circuits -= 1
 
-    circuit_sizes = {}
-    for i in range(num_points):
-        root = find_root(i)
-        if root in circuit_sizes:
-            circuit_sizes[root] += 1
-        else:
-            circuit_sizes[root] = 1
+            if num_circuits == 1:
+                x1 = points[idx_a][0]
+                x2 = points[idx_b][0]
+                
+                print(f"Final connection between index {idx_a} (X={x1}) and index {idx_b} (X={x2})")
+                return x1 * x2
 
-    sizes = sorted(circuit_sizes.values(), reverse=True)
-    
-    if len(sizes) >= 3:
-        result = sizes[0] * sizes[1] * sizes[2]
-    else:
-        result = 1
-        for s in sizes:
-            result *= s
-
-    return result
+    return 0
 
 if __name__ == '__main__':
     result = decipher('input.txt')
